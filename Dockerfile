@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.2
 
 # Install software
 RUN apk add --update go && rm -rf /var/cache/apk/*
