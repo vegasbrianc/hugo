@@ -17,9 +17,10 @@ RUN mkdir /usr/share/blog
 WORKDIR /usr/share/blog
 
 # Automatically build site
-ONBUILD ADD site/ /usr/share/blog
+ONBUILD ADD site /usr/share/blog
 RUN hugo new site /usr/share/blog
 
+# Install Hugo Base theme and cleanup afterwards
 ADD https://github.com/crakjie/hugo-base-theme/archive/master.zip /usr/share/blog/
 
 RUN unzip /usr/share/blog/master.zip
@@ -27,8 +28,10 @@ RUN cp -R /usr/share/blog/hugo-base-theme-master/* /usr/share/blog
 RUN rm -R /usr/share/blog/hugo-base-theme-master
 RUN rm /usr/share/blog/master.zip
 
+# Edit the Hugo Config
+RUN sed -i -e"s/baseurl\s*=\s*\"http:\/\/gohugo.io\"/baseurl = \"http:\/\/localhost\"/" /usr/share/blog/config.toml
+
 # By default, serve site
-ENV HUGO_BASE_URL http://193.246.34.210/
-CMD hugo server -b ${HUGO_BASE_URL} --watch --port=80 --appendPort=false --bind=0.0.0.0 --theme=hugo-base
+CMD hugo server -baseUrl "http://localhost/" --watch --port=80 --appendPort=false --bind=0.0.0.0
 
 EXPOSE 80
